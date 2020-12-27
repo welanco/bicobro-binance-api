@@ -104,3 +104,9 @@ dist
 .tern-port
 
 .nyc_output/
+
+dist/
+
+v8-compile-cache-0
+yarn*
+
