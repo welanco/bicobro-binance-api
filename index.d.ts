@@ -1,5 +1,5 @@
 // tslint:disable:interface-name
-declare module 'binance-api-node' {
+declare module 'bicobro-binance-api' {
   export default function(options?: {
     apiKey: string
     apiSecret: string
@@ -163,7 +163,7 @@ declare module 'binance-api-node' {
   export type GetOrderOptions = {symbol: string, orderId: number} | {symbol: string, origClientOrderId: string}
 
   export interface Binance {
-    accountInfo(options?: { useServerTime: boolean }): Promise<Account>
+    accountInfo(options?: { useServerTime: boolean; recvWindow?: number }): Promise<Account>
     tradeFee(): Promise<TradeFeeResult>
     aggTrades(options?: {
       symbol: string
@@ -191,19 +191,21 @@ declare module 'binance-api-node' {
       limit?: number
       fromId?: number
       useServerTime?: boolean
+      recvWindow?: number
     }): Promise<MyTrade[]>
-    getOrder(options: GetOrderOptions & {useServerTime?: boolean}): Promise<QueryOrderResult>
+    getOrder(options: GetOrderOptions & {useServerTime?: boolean; recvWindow?: number}): Promise<QueryOrderResult>
     cancelOrder(options: {
       symbol: string
       orderId: number
       useServerTime?: boolean
+      recvWindow?: number
     }): Promise<CancelOrderResult>
     cancelOpenOrders(options: {
       symbol: string
       useServerTime?: boolean
     }): Promise<CancelOrderResult[]>
-    openOrders(options: { symbol?: string; useServerTime?: boolean }): Promise<QueryOrderResult[]>
-    allOrders(options: { symbol?: string; useServerTime?: boolean }): Promise<QueryOrderResult[]>
+    openOrders(options: { symbol?: string; useServerTime?: boolean; recvWindow?: number }): Promise<QueryOrderResult[]>
+    allOrders(options: { symbol?: string; useServerTime?: boolean; recvWindow?: number }): Promise<QueryOrderResult[]>
     allOrdersOCO(options: {
       timestamp: number
       fromId?: number
@@ -225,6 +227,7 @@ declare module 'binance-api-node' {
       address: string
       amount: number
       name?: string
+      recvWindow?: number
     }): Promise<WithrawResponse>
     assetDetail(): Promise<AssetDetail>
     withdrawHistory(options: {
@@ -232,12 +235,14 @@ declare module 'binance-api-node' {
       status?: number
       startTime?: number
       endTime?: number
+      recvWindow?: number
     }): Promise<WithdrawHistoryResponse>
     depositHistory(options: {
       asset: string
       status?: number
       startTime?: number
       endTime?: number
+      recvWindow?: number
     }): Promise<DepositHistoryResponse>
     futuresPing(): Promise<boolean>
     futuresTime(): Promise<number>

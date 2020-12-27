@@ -3,9 +3,16 @@
 
 This API wrapper based on the binance-node-api wrapper from [Ashlar](https://github.com/Ashlar/binance-api-node)
 
-### Installation
+I added the missing "recvWindow" param to the API and so you can set this flag for your api-calls to prevent 
+timeout errors.
 
-    yarn add binance-api-node
+### Installation npm
+
+    npm i --save bicobro-binance-api
+
+### Installation yarn
+
+    yarn add bicobro-binance-api
 
 ### Getting started
 
@@ -14,7 +21,7 @@ you don't plan on doing authenticated calls. You can create an api key
 [here](https://www.binance.com/userCenter/createApi.html).
 
 ```js
-import Binance from 'binance-api-node'
+import Binance from 'bicobro-binance-api'
 
 const client = Binance()
 
@@ -31,7 +38,7 @@ client.time().then(time => console.log(time))
 If you do not have an appropriate babel config, you will need to use the basic commonjs requires.
 
 ```js
-const Binance = require('binance-api-node').default
+const Binance = require('bicobro-binance-api').default
 ```
 
 Every REST method returns a Promise, making this library [async await](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function) ready.
@@ -2042,7 +2049,7 @@ An utility error code map is also being exported by the package in order for you
 conditionals upon specific errors that could occur while using the API.
 
 ```js
-import Binance, { ErrorCodes } from 'binance-api-node'
+import Binance, { ErrorCodes } from 'bicobro-binance-api'
 
 console.log(ErrorCodes.INVALID_ORDER_TYPE) // -1116
 ```
