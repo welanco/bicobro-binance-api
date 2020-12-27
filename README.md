@@ -1,11 +1,7 @@
-# binance-api-node [![build](https://img.shields.io/travis/Ashlar/binance-api-node/master.svg?style=flat-square)](https://travis-ci.org/Ashlar/binance-api-node) [![cover](https://img.shields.io/coveralls/github/Ashlar/binance-api-node/master?style=flat-square)](https://coveralls.io/github/Ashlar/binance-api-node?branch=master) [![bnb](https://img.shields.io/badge/binance-winner-yellow.svg?style=flat-square)](https://github.com/binance-exchange/binance-api-node)
 
 > A complete API wrapper for the [Binance](https://binance.com) API.
 
-Note: This wrapper uses Promises, if they are not supported in your environment, you might
-want to add [a polyfill](https://github.com/stefanpenner/es6-promise) for them.
-
-For PRs or issues, head over to the [source repository](https://github.com/Ashlar/binance-api-node).
+This API wrapper based on the binance-node-api wrapper from [Ashlar](https://github.com/Ashlar/binance-api-node)
 
 ### Installation
 
