@@ -6,6 +6,13 @@ This API wrapper based on the binance-node-api wrapper from [Ashlar](https://git
 I added the missing "recvWindow" param to the API and so you can set this flag for your api-calls to prevent 
 timeout errors.
 
+### Change-Log
+
+| Version | Date       | Change   |
+| ------- | ---------- | -------- |
+| 0.11.1  | 2020-12-28 | change default httpBase to faster url in binance api-cluster 'https://api2.binance.com'     |
+| 0.11.0  | 2020-12-27 | add missing "recvWindow" param to the API to prevent timeout errors |
+
 ### Installation npm
 
     npm i --save bicobro-binance-api

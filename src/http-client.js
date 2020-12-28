@@ -3,7 +3,7 @@ import zip from 'lodash.zipobject'
 
 import 'isomorphic-fetch'
 
-const BASE = 'https://api.binance.com'
+const BASE = 'https://api2.binance.com'
 const FUTURES = 'https://fapi.binance.com'
 
 const defaultGetTime = () => Date.now()
