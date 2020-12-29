@@ -847,7 +847,7 @@ declare module 'bicobro-binance-api' {
 
   export interface CandlesOptions {
     symbol: string
-    interval: CandleChartInterval
+    interval: CandleChartInterval | string
     limit?: number
     startTime?: number
     endTime?: number
