@@ -1,6 +1,6 @@
 {
   "name": "bicobro-binance-api",
-  "version": "0.11.2",
+  "version": "0.11.3",
   "description": "A node API wrapper for binance API",
   "main": "dist",
   "files": [
@@ -16,6 +16,7 @@
     "lint": "eslint src"
   },
   "dependencies": {
+    "core-js": "^3.8.2",
     "isomorphic-fetch": "^2.2.1",
     "lodash.zipobject": "^4.1.3",
     "reconnecting-websocket": "^4.2.0",
