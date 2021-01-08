@@ -5,6 +5,7 @@ import openWebSocket from 'open-websocket'
 
 const BASE = 'wss://stream.binance.com:9443/ws'
 const FUTURES = 'wss://fstream.binance.com/ws'
+const STREAMS = 'wss://stream.binance.com:9443/stream?streams='
 
 const depth = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
@@ -208,8 +209,14 @@ const aggTradesInternal = (payload, cb) => {
 }
 
 const tradesInternal = (payload, cb) => {
-  const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = openWebSocket(`${BASE}/${symbol.toLowerCase()}@trade`)
+  const symbols = Array.isArray(payload) ? payload : [payload];
+  let url = symbols[0];
+  for (let c = 1; c < symbols.length; c++) {
+    url += `/${symbols[c].toLowerCase()}@trade`;
+  }
+  const cache = ([payload]).map(() => {
+    const w = openWebSocket(`${STREAMS}${url}`)
+
     w.onmessage = msg => {
       const {
         e: eventType,
@@ -223,7 +230,7 @@ const tradesInternal = (payload, cb) => {
         t: tradeId,
         a: sellerOrderId,
         b: buyerOrderId,
-      } = JSON.parse(msg.data)
+      } = JSON.parse(msg.data).data
 
       cb({
         eventType,

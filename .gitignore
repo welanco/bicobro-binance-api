@@ -110,3 +110,5 @@ dist/
 v8-compile-cache-0
 yarn*
 
+.local-pack
+local-package-publisher.log

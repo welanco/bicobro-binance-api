@@ -10,6 +10,7 @@ timeout errors.
 
 | Version | Date       | Change   |
 | ------- | ---------- | -------- |
+| 0.11.3  | 2021-01-08 | change Websockets/[trades](#trades-1) to multistreams for symbol-array stream support     |
 | 0.11.2  | 2020-12-29 | change CandlesOptions to accept string-values for interval     |
 | 0.11.1  | 2020-12-28 | change default httpBase to faster url in binance api-cluster 'https://api2.binance.com'     |
 | 0.11.0  | 2020-12-27 | add missing "recvWindow" param to the API to prevent timeout errors |
