@@ -216,7 +216,6 @@ const tradesInternal = (payload, cb) => {
   }
   const cache = ([payload]).map(() => {
     const w = openWebSocket(`${STREAMS}${url}`)
-
     w.onmessage = msg => {
       const {
         e: eventType,
