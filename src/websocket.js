@@ -210,7 +210,7 @@ const aggTradesInternal = (payload, cb) => {
 
 const tradesInternal = (payload, cb) => {
   const symbols = Array.isArray(payload) ? payload : [payload];
-  let url = symbols[0];
+  let url = `${symbols[c].toLowerCase()}@trade`;
   for (let c = 1; c < symbols.length; c++) {
     url += `/${symbols[c].toLowerCase()}@trade`;
   }
