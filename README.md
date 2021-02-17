@@ -3,7 +3,7 @@
 
 This API wrapper based on the binance-node-api wrapper from [Ashlar](https://github.com/Ashlar/binance-api-node)
 
-I use the bicobro-binane-api in my new trading-bot. First impressions you cyn find on: [coin-bot.de](https://www.coin-bot.de)
+I use the bicobro-binane-api in my new trading-bot. First impressions you can find on my coin bot frontend page: [www.coin-bot.de](https://www.coin-bot.de)
 
 I added the missing "recvWindow" param to the API and so you can set this flag for your api-calls to prevent 
 timeout errors.
