@@ -1,6 +1,6 @@
 {
   "name": "bicobro-binance-api",
-  "version": "0.11.6",
+  "version": "0.11.61",
   "description": "A node API wrapper for Binance",
   "main": "dist",
   "files": [
