@@ -195,9 +195,35 @@ test('[WS] depth', t => {
   })
 })
 
+test('[WS] depth with update speed', t => {
+  return new Promise(resolve => {
+    client.ws.depth('ETHBTC@100ms', depth => {
+      checkFields(t, depth, [
+        'eventType',
+        'eventTime',
+        'firstUpdateId',
+        'finalUpdateId',
+        'symbol',
+        'bidDepth',
+        'askDepth',
+      ])
+      resolve()
+    })
+  })
+})
+
 test('[WS] partial depth', t => {
   return new Promise(resolve => {
     client.ws.partialDepth({ symbol: 'ETHBTC', level: 10 }, depth => {
+      checkFields(t, depth, ['lastUpdateId', 'bids', 'asks'])
+      resolve()
+    })
+  })
+})
+
+test('[WS] partial depth with update speed', t => {
+  return new Promise(resolve => {
+    client.ws.partialDepth({ symbol: 'ETHBTC@100ms', level: 10 }, depth => {
       checkFields(t, depth, ['lastUpdateId', 'bids', 'asks'])
       resolve()
     })
@@ -219,6 +245,44 @@ test('[WS] allTicker', t => {
       t.truthy(Array.isArray(tickers))
       t.is(tickers[0].eventType, '24hrTicker')
       checkFields(t, tickers[0], ['symbol', 'priceChange', 'priceChangePercent'])
+      resolve()
+    })
+  })
+})
+
+test('[WS] miniTicker', t => {
+  return new Promise(resolve => {
+    client.ws.miniTicker('ETHBTC', ticker => {
+      checkFields(t, ticker, [
+        'open',
+        'high',
+        'low',
+        'curDayClose',
+        'eventTime',
+        'symbol',
+        'volume',
+        'volumeQuote',
+      ])
+      resolve()
+    })
+  })
+})
+
+test('[WS] allMiniTickers', t => {
+  return new Promise(resolve => {
+    client.ws.allMiniTickers(tickers => {
+      t.truthy(Array.isArray(tickers))
+      t.is(tickers[0].eventType, '24hrMiniTicker')
+      checkFields(t, tickers[0], [
+        'open',
+        'high',
+        'low',
+        'curDayClose',
+        'eventTime',
+        'symbol',
+        'volume',
+        'volumeQuote',
+      ])
       resolve()
     })
   })
@@ -269,6 +333,48 @@ test('[WS] aggregate trades', t => {
         'symbol',
         'firstId',
         'lastId',
+      ])
+      resolve()
+    })
+  })
+})
+
+test('[WS] liquidations', t => {
+  return new Promise(resolve => {
+    client.ws.futuresLiquidations('ETHBTC', liquidation => {
+      checkFields(t, liquidation, [
+        'symbol',
+        'price',
+        'origQty',
+        'lastFilledQty',
+        'accumulatedQty',
+        'averagePrice',
+        'status',
+        'timeInForce',
+        'type',
+        'side',
+        'time',
+      ])
+      resolve()
+    })
+  })
+})
+
+test('[FUTURES-WS] all liquidations', t => {
+  return new Promise(resolve => {
+    client.ws.futuresAllLiquidations(liquidation => {
+      checkFields(t, liquidation, [
+        'symbol',
+        'price',
+        'origQty',
+        'lastFilledQty',
+        'accumulatedQty',
+        'averagePrice',
+        'status',
+        'timeInForce',
+        'type',
+        'side',
+        'time',
       ])
       resolve()
     })
@@ -530,7 +636,7 @@ test('[FUTURES-REST] markPrice', async t => {
   checkFields(t, res[0], ['symbol', 'markPrice', 'lastFundingRate', 'nextFundingTime', 'time'])
 })
 
-test('[FUTURES-REST] allForceOrders', async t => {
+test.skip('[FUTURES-REST] allForceOrders', async t => {
   const res = await client.futuresAllForceOrders()
   t.truthy(Array.isArray(res))
   t.truthy(res.length === 100)
@@ -554,7 +660,37 @@ test('[FUTURES-REST] candles', async t => {
     t.is(e.message, 'Method candles requires symbol parameter.')
   }
 
-  const candles = await client.candles({ symbol: 'BTCUSDT' })
+  const candles = await client.futuresCandles({ symbol: 'BTCUSDT' })
+
+  t.truthy(candles.length)
+
+  const [candle] = candles
+  checkFields(t, candle, candleFields)
+})
+
+test('[FUTURES-REST] mark price candles', async t => {
+  try {
+    await client.futuresMarkPriceCandles({})
+  } catch (e) {
+    t.is(e.message, 'Method candles requires symbol parameter.')
+  }
+
+  const candles = await client.futuresMarkPriceCandles({ symbol: 'BTCUSDT' })
+
+  t.truthy(candles.length)
+
+  const [candle] = candles
+  checkFields(t, candle, candleFields)
+})
+
+test('[FUTURES-REST] index price candles', async t => {
+  try {
+    await client.futuresIndexPriceCandles({})
+  } catch (e) {
+    t.is(e.message, 'Method candles requires pair parameter.')
+  }
+
+  const candles = await client.futuresIndexPriceCandles({ pair: 'BTCUSDT' })
 
   t.truthy(candles.length)
 

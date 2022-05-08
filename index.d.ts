@@ -1,16 +1,59 @@
 // tslint:disable:interface-name
-declare module 'bicobro-binance-api' {
-  export default function(options?: {
-    apiKey: string
-    apiSecret: string
+declare module 'binance-api-node' {
+  export default function (options?: {
+    apiKey?: string
+    apiSecret?: string
     getTime?: () => number | Promise<number>
     httpBase?: string
     httpFutures?: string
     wsBase?: string
     wsFutures?: string
+    proxy?: string
   }): Binance
 
-  export enum ErrorCodes {
+  export type ErrorCodes_LT =
+    | -1000
+    | -1001
+    | -1002
+    | -1003
+    | -1006
+    | -1007
+    | -1013
+    | -1014
+    | -1015
+    | -1016
+    | -1020
+    | -1021
+    | -1022
+    | -1100
+    | -1101
+    | -1102
+    | -1103
+    | -1104
+    | -1105
+    | -1106
+    | -1112
+    | -1114
+    | -1115
+    | -1116
+    | -1117
+    | -1118
+    | -1119
+    | -1120
+    | -1121
+    | -1125
+    | -1127
+    | -1128
+    | -1130
+    | -2008
+    | -2009
+    | -2010
+    | -2012
+    | -2013
+    | -2014
+    | -2015
+
+  export const enum ErrorCodes {
     UNKNOWN = -1000,
     DISCONNECTED = -1001,
     UNAUTHORIZED = -1002,
@@ -61,19 +104,15 @@ declare module 'bicobro-binance-api' {
     canTrade: boolean
     canWithdraw: boolean
     makerCommission: number
-    permissions: TradingType[]
+    permissions: TradingType_LT[]
     sellerCommission: number
     takerCommission: number
     updateTime: number
   }
   export interface TradeFee {
     symbol: string
-    maker: number
-    taker: number
-  }
-  export interface TradeFeeResult {
-    tradeFee: TradeFee[]
-    success: boolean
+    makerCommission: number
+    takerCommission: number
   }
   export interface AggregatedTrade {
     aggId: number
@@ -93,37 +132,109 @@ declare module 'bicobro-binance-api' {
     locked: string
   }
 
+  export type booleanString = 'true' | 'false'
+
+  export interface positionAmount {
+    amount: string
+    amountInBTC: string
+    amountInUSDT: string
+    asset: string
+  }
+
+  export interface MultiAssetsMargin {
+    multiAssetsMargin: boolean
+  }
+
+  export interface LendingAccount {
+    positionAmountVos: positionAmount[]
+    totalAmountInBTC: string
+    totalAmountInUSDT: string
+    totalFixedAmountInBTC: string
+    totalFixedAmountInUSDT: string
+    totalFlexibleInBTC: string
+    totalFlexibleInUSDT: string
+  }
+
+  export interface FundingWallet {
+    asset: string
+    free: string // available balance
+    locked: string // locked asset
+    freeze: string // freeze asset
+    withdrawing: string
+    btcValuation: string
+  }
+
+  export interface NetworkInformation {
+    addressRegex: string
+    coin: string
+    depositDesc: string
+    depositEnable: boolean
+    isDefault: boolean
+    memoRegex: string
+    minConfirm: number
+    name: string
+    network: string
+    resetAddressStatus: boolean
+    specialTips: string
+    unLockConfirm: number
+    withdrawDesc: string
+    withdrawEnable: boolean
+    withdrawFee: number
+    withdrawIntegerMultiple: number
+    withdrawMax: number
+    withdrawMin: number
+    sameAddress: string
+  }
+
+  export interface CoinInformation {
+    coin: string
+    depositAllEnable: boolean
+    free: number
+    freeze: number
+    ipoable: number
+    ipoing: number
+    isLegalMoney: boolean
+    locked: number
+    name: string
+    networkList: NetworkInformation[]
+  }
+
   export interface DepositAddress {
     address: string
-    addressTag: string
-    asset: string
-    success: boolean
+    tag: string
+    coin: string
+    url: string
   }
 
   export interface WithrawResponse {
     id: string
-    msg: string
-    success: boolean
   }
 
-  export enum DepositStatus {
+  export type DepositStatus_LT = 0 | 1
+
+  export const enum DepositStatus {
     PENDING = 0,
     SUCCESS = 1,
   }
 
   export interface DepositHistoryResponse {
-    depositList: {
+    [index: number]: {
       insertTime: number
-      amount: number
-      asset: string
+      amount: string
+      coin: string
+      network: string
       address: string
       txId: string
-      status: DepositStatus
-    }[]
-    success: boolean
+      status: DepositStatus_LT
+      addressTag?: string
+      transferType?: number
+      confirmTimes?: string
+    }
   }
 
-  export enum WithdrawStatus {
+  export type WithdrawStatus_LT = 0 | 1 | 2 | 3 | 4 | 5 | 6
+
+  export const enum WithdrawStatus {
     EMAIL_SENT = 0,
     CANCELLED = 1,
     AWAITING_APPROVAL = 2,
@@ -134,37 +245,214 @@ declare module 'bicobro-binance-api' {
   }
 
   export interface WithdrawHistoryResponse {
-    withdrawList: {
+    [index: number]: {
       id: string
-      amount: number
-      transactionFee: number
+      amount: string
+      transactionFee: string
       address: string
-      asset: string
+      coin: string
       txId: string
       applyTime: number
-      status: WithdrawStatus
-    }[]
-    success: boolean
-  }
-
-  export interface AssetDetail {
-    success: boolean
-    assetDetail: {
-      [asset: string]: {
-        minWithdrawAmount: number
-        depositStatus: boolean
-        withdrawFee: number
-        withdrawStatus: boolean
-        depositTip?: string
-      }
+      status: WithdrawStatus_LT
+      network: string
+      transferType?: number
+      withdrawOrderId?: string
     }
   }
 
-  export type GetOrderOptions = {symbol: string, orderId: number} | {symbol: string, origClientOrderId: string}
+  export interface AssetDetail {
+    [asset: string]: {
+      minWithdrawAmount: string
+      depositStatus: boolean
+      withdrawFee: string
+      withdrawStatus: boolean
+      depositTip?: string
+    }
+  }
+
+  export interface BNBBurn {
+    spotBNBBurn: boolean
+    interestBNBBurn: boolean
+  }
+
+  export interface SetBNBBurnOptions {
+    spotBNBBurn?: boolean | booleanString
+    interestBNBBurn?: boolean | booleanString
+    recvWindow?: number
+  }
+
+  export interface AccountSnapshot {
+    code: number
+    msg: string
+    snapshotVos: {
+      data: {
+        balances: {
+          asset: string
+          free: number
+          locked: number
+        }[]
+        totalAssetOfBtc: number
+      }
+      type: string
+      updateTime: number
+    }[]
+  }
+
+  export type GetOrderOptions =
+    | { symbol: string; orderId: number; useServerTime?: boolean }
+    | { symbol: string; origClientOrderId: string; useServerTime?: boolean }
+
+  export type CancelOrderOptions =
+    | { symbol: string; orderId: number; useServerTime?: boolean; newClientOrderId?: string }
+    | {
+        symbol: string
+        origClientOrderId: string
+        useServerTime?: boolean
+        newClientOrderId?: string
+      }
+
+  export type GetOrderOcoOptions =
+    | { symbol: string; orderListId: number; useServerTime?: boolean }
+    | { symbol: string; listClientOrderId: string; useServerTime?: boolean }
+
+  export type CancelOrderOcoOptions =
+    | { symbol: string; orderListId: number; useServerTime?: boolean; newClientOrderId?: string }
+    | {
+        symbol: string
+        listClientOrderId: string
+        useServerTime?: boolean
+        newClientOrderId?: string
+      }
+
+  export type cancelOpenOrdersOptions = {
+    symbol: string
+    useServerTime?: boolean
+  }
+
+  export interface GetInfo {
+    spot: GetInfoDetails
+    futures: GetInfoDetails
+  }
+
+  export type GetInfoDetails = {
+    usedWeight1m?: string
+    orderCount10s?: string
+    orderCount1m?: string
+    orderCount1h?: string
+    orderCount1d?: string
+    responseTime?: string
+  }
+
+  export type TransferType_LT =
+    | 'MAIN_C2C'
+    | 'MAIN_UMFUTURE'
+    | 'MAIN_CMFUTURE'
+    | 'MAIN_MARGIN'
+    | 'MAIN_MINING'
+    | 'C2C_MAIN'
+    | 'C2C_UMFUTURE'
+    | 'C2C_MINING'
+    | 'UMFUTURE_MAIN'
+    | 'UMFUTURE_C2C'
+    | 'UMFUTURE_MARGIN'
+    | 'CMFUTURE_MAIN'
+    | 'MARGIN_MAIN'
+    | 'MARGIN_UMFUTURE'
+    | 'MINING_MAIN'
+    | 'MINING_UMFUTURE'
+    | 'MINING_C2C'
+
+  export const enum TransferType {
+    MAIN_C2C = 'MAIN_C2C',
+    MAIN_UMFUTURE = 'MAIN_UMFUTURE',
+    MAIN_CMFUTURE = 'MAIN_CMFUTURE',
+    MAIN_MARGIN = 'MAIN_MARGIN',
+    MAIN_MINING = 'MAIN_MINING',
+    C2C_MAIN = 'C2C_MAIN',
+    C2C_UMFUTURE = 'C2C_UMFUTURE',
+    C2C_MINING = 'C2C_MINING',
+    UMFUTURE_MAIN = 'UMFUTURE_MAIN',
+    UMFUTURE_C2C = 'UMFUTURE_C2C',
+    UMFUTURE_MARGIN = 'UMFUTURE_MARGIN',
+    CMFUTURE_MAIN = 'CMFUTURE_MAIN',
+    MARGIN_MAIN = 'MARGIN_MAIN',
+    MARGIN_UMFUTURE = 'MARGIN_UMFUTURE',
+    MINING_MAIN = 'MINING_MAIN',
+    MINING_UMFUTURE = 'MINING_UMFUTURE',
+    MINING_C2C = 'MINING_C2C',
+  }
+
+  export interface UniversalTransfer {
+    type: TransferType_LT
+    asset: string
+    amount: string
+    recvWindow?: number
+  }
+
+  export interface UniversalTransferHistory {
+    type: TransferType_LT
+    startTime?: number
+    endTime?: number
+    current?: number
+    size?: number
+    recvWindow?: number
+  }
+
+  export interface UniversalTransferHistoryResponse {
+    total: string
+    rows: {
+      asset: string
+      amount: string
+      type: TransferType_LT
+      status: string
+      tranId: number
+      timestamp: number
+    }[]
+  }
+
+  export interface MarginBorrowParent {
+    asset: string
+    isIsolated?: 'TRUE' | 'FALSE'
+    amount: string
+    recvWindow?: number
+  }
+
+  export interface MarginBorrowCross extends MarginBorrowParent {
+    isIsolated?: 'FALSE'
+  }
+
+  export interface MarginBorrowIsolated extends MarginBorrowParent {
+    isIsolated: 'TRUE'
+    symbol: string
+  }
+
+  export type MarginBorrowOptions = MarginBorrowCross | MarginBorrowIsolated
+
+  export type MarginType_LT = 'ISOLATED' | 'CROSSED'
+
+  export const enum MarginType {
+    ISOLATED = 'ISOLATED',
+    CROSSED = 'CROSSED',
+  }
+
+  export interface ApiPermission {
+    ipRestrict: boolean
+    createTime: number
+    enableWithdrawals: boolean
+    enableInternalTransfer: boolean
+    permitsUniversalTransfer: boolean
+    enableVanillaOptions: boolean
+    enableReading: boolean
+    enableFutures: boolean
+    enableMargin: boolean
+    enableSpotAndMarginTrading: boolean
+    tradingAuthorityExpirationTime: number
+  }
 
   export interface Binance {
-    accountInfo(options?: { useServerTime: boolean; recvWindow?: number }): Promise<Account>
-    tradeFee(): Promise<TradeFeeResult>
+    getInfo(): GetInfo
+    accountInfo(options?: { useServerTime: boolean }): Promise<Account>
+    tradeFee(options?: { useServerTime: boolean }): Promise<TradeFee[]>
     aggTrades(options?: {
       symbol: string
       fromId?: string
@@ -175,13 +463,18 @@ declare module 'bicobro-binance-api' {
     allBookTickers(): Promise<{ [key: string]: Ticker }>
     book(options: { symbol: string; limit?: number }): Promise<OrderBook>
     exchangeInfo(): Promise<ExchangeInfo>
-    order(options: NewOrder): Promise<Order>
-    orderTest(options: NewOrder): Promise<Order>
+    lendingAccount(options?: { useServerTime: boolean }): Promise<LendingAccount>
+    fundingWallet(options?: {
+      asset?: string
+      needBtcValuation?: booleanString
+      useServerTime?: boolean
+    }): Promise<FundingWallet[]>
+    apiPermission(options?: { recvWindow?: number }): Promise<ApiPermission>
+    order(options: NewOrderSpot): Promise<Order>
+    orderTest(options: NewOrderSpot): Promise<Order>
     orderOco(options: NewOcoOrder): Promise<OcoOrder>
     ping(): Promise<boolean>
-    prices(options?: {
-      symbol?: string
-    }): Promise<{ [index: string]: string }>
+    prices(options?: { symbol?: string }): Promise<{ [index: string]: string }>
     avgPrice(options?: { symbol: string }): Promise<AvgPriceResult | AvgPriceResult[]>
     time(): Promise<number>
     trades(options: { symbol: string; limit?: number }): Promise<TradeResult[]>
@@ -191,21 +484,27 @@ declare module 'bicobro-binance-api' {
       limit?: number
       fromId?: number
       useServerTime?: boolean
-      recvWindow?: number
     }): Promise<MyTrade[]>
-    getOrder(options: GetOrderOptions & {useServerTime?: boolean; recvWindow?: number}): Promise<QueryOrderResult>
-    cancelOrder(options: {
-      symbol: string
-      orderId: number
-      useServerTime?: boolean
+    getOrder(options: GetOrderOptions): Promise<QueryOrderResult>
+    getOrderOco(options: GetOrderOcoOptions): Promise<QueryOrderOcoResult>
+    cancelOrder(options: CancelOrderOptions): Promise<CancelOrderResult>
+    cancelOrderOco(options: CancelOrderOcoOptions): Promise<CancelOrderOcoResult>
+    cancelOpenOrders(options: cancelOpenOrdersOptions): Promise<CancelOrderResult[]>
+    openOrders(options: {
+      symbol?: string
       recvWindow?: number
-    }): Promise<CancelOrderResult>
-    cancelOpenOrders(options: {
-      symbol: string
       useServerTime?: boolean
-    }): Promise<CancelOrderResult[]>
-    openOrders(options: { symbol?: string; useServerTime?: boolean; recvWindow?: number }): Promise<QueryOrderResult[]>
-    allOrders(options: { symbol?: string; useServerTime?: boolean; recvWindow?: number }): Promise<QueryOrderResult[]>
+    }): Promise<QueryOrderResult[]>
+    allOrders(options: {
+      symbol?: string
+      orderId?: number
+      startTime?: number
+      endTime?: number
+      limit?: number
+      recvWindow?: number
+      timestamp?: number
+      useServerTime?: boolean
+    }): Promise<QueryOrderResult[]>
     allOrdersOCO(options: {
       timestamp: number
       fromId?: number
@@ -221,34 +520,57 @@ declare module 'bicobro-binance-api' {
       limit?: number
       fromId?: number
     }): Promise<TradeResult[]>
-    depositAddress(options: { asset: string }): Promise<DepositAddress>
+    capitalConfigs(options?: { recvWindow?: number }): Promise<CoinInformation[]>
+    depositAddress(options: {
+      coin: string
+      network?: string
+      recvWindow?: number
+    }): Promise<DepositAddress>
     withdraw(options: {
-      asset: string
+      coin: string
+      network?: string
       address: string
       amount: number
       name?: string
-      recvWindow?: number
+      transactionFeeFlag?: boolean
     }): Promise<WithrawResponse>
     assetDetail(): Promise<AssetDetail>
+    getBnbBurn(): Promise<BNBBurn>
+    setBnbBurn(opts: SetBNBBurnOptions): Promise<BNBBurn>
+    accountSnapshot(options: {
+      type: string
+      startTime?: number
+      endTime?: number
+      limit?: number
+    }): Promise<AccountSnapshot>
     withdrawHistory(options: {
-      asset: string
+      coin: string
       status?: number
       startTime?: number
       endTime?: number
-      recvWindow?: number
+      offset?: number
+      limit?: number
     }): Promise<WithdrawHistoryResponse>
     depositHistory(options: {
-      asset: string
+      coin?: string
       status?: number
       startTime?: number
       endTime?: number
+      offset?: number
+      limit?: number
       recvWindow?: number
     }): Promise<DepositHistoryResponse>
+    universalTransfer(options: UniversalTransfer): Promise<{ tranId: number }>
+    universalTransferHistory(
+      options: UniversalTransferHistory,
+    ): Promise<UniversalTransferHistoryResponse>
     futuresPing(): Promise<boolean>
     futuresTime(): Promise<number>
     futuresExchangeInfo(): Promise<ExchangeInfo>
     futuresBook(options: { symbol: string; limit?: number }): Promise<OrderBook>
     futuresCandles(options: CandlesOptions): Promise<CandleChartResult[]>
+    futuresMarkPriceCandles(options: CandlesOptions): Promise<CandleChartResult[]>
+    futuresIndexPriceCandles(options: IndexPriceCandlesOptions): Promise<CandleChartResult[]>
     futuresAggTrades(options?: {
       symbol: string
       fromId?: string
@@ -257,10 +579,17 @@ declare module 'bicobro-binance-api' {
       limit?: number
     }): Promise<AggregatedTrade[]>
     futuresTrades(options: { symbol: string; limit?: number }): Promise<TradeResult[]>
+    futuresUserTrades(options: {
+      symbol: string
+      startTime?: number
+      endTime?: number
+      fromId?: number
+      limit?: number
+    }): Promise<FuturesUserTradeResult[]>
     futuresDailyStats(options?: { symbol: string }): Promise<DailyStatsResult | DailyStatsResult[]>
     futuresPrices(): Promise<{ [index: string]: string }>
     futuresAllBookTickers(): Promise<{ [key: string]: Ticker }>
-    futuresMarkPrice(): Promise<MarkPriceResult>
+    futuresMarkPrice(): Promise<MarkPriceResult[]>
     futuresAllForceOrders(options?: {
       symbol?: string
       startTime?: number
@@ -273,31 +602,116 @@ declare module 'bicobro-binance-api' {
       endTime?: number
       limit?: number
     }): Promise<FundingRateResult[]>
-    futuresOrder(options: NewOrder): Promise<Order>
+    futuresOrder(options: NewFuturesOrder): Promise<FuturesOrder>
+
+    getMultiAssetsMargin(): Promise<MultiAssetsMargin>
+    setMultiAssetsMargin(options: MultiAssetsMargin): Promise<MultiAssetsMargin>
+
     futuresCancelOrder(options: {
       symbol: string
       orderId: number
       useServerTime?: boolean
     }): Promise<CancelOrderResult>
+    futuresCancelAllOpenOrders(options: {
+      symbol: string
+    }): Promise<FuturesCancelAllOpenOrdersResult>
+    futuresGetOrder(options: {
+      symbol: string
+      orderId?: number
+      origClientOrderId?: string
+      recvWindow?: number
+      timestamp?: number
+    }): Promise<QueryFuturesOrderResult>
     futuresOpenOrders(options: {
       symbol?: string
       useServerTime?: boolean
-    }): Promise<QueryOrderResult>
-    futuresPositionRisk(options?: { recvWindow: number }): Promise<PositionRiskResult[]>
+    }): Promise<QueryOrderResult[]>
+    futuresPositionRisk(options?: {
+      symbol?: string
+      recvWindow?: number
+    }): Promise<PositionRiskResult[]>
+    futuresLeverageBracket(options?: {
+      symbol?: string
+      recvWindow: number
+    }): Promise<LeverageBracketResult[]>
     futuresAccountBalance(options?: { recvWindow: number }): Promise<FuturesBalanceResult[]>
+    futuresAccountInfo(options?: { recvWindow: number }): Promise<FuturesAccountInfoResult>
     futuresPositionMode(options?: { recvWindow: number }): Promise<PositionModeResult>
     futuresPositionModeChange(options: {
       dualSidePosition: string
       recvWindow: number
     }): Promise<ChangePositionModeResult>
-    marginOrder(options: NewOrder): Promise<Order>
-    marginAllOrders(options: { symbol: string, useServerTime?: boolean }): Promise<QueryOrderResult[]>
+    futuresLeverage(options: {
+      symbol: string
+      leverage: number
+      recvWindow?: number
+    }): Promise<FuturesLeverageResult>
+    futuresMarginType(options: {
+      symbol: string
+      marginType: MarginType_LT
+      recvWindow?: number
+    }): Promise<FuturesMarginTypeResult>
+    futuresIncome(options: {
+      symbol?: string
+      incomeType?: FuturesIncomeType_LT
+      startTime?: number
+      endTime?: number
+      limit?: number
+      recvWindow?: number
+    }): Promise<FuturesIncomeResult[]>
+    marginOrder(options: NewOrderMargin): Promise<Order>
+    marginOrderOco(options: NewOcoOrderMargin): Promise<MarginOcoOrder>
+    marginGetOrder(options: {
+      symbol: string
+      isIsolated?: string | boolean
+      orderId?: string
+      origClientOrderId?: string
+      recvWindow?: number
+    }): Promise<Order>
+    marginAllOrders(options: {
+      symbol: string
+      useServerTime?: boolean
+    }): Promise<QueryOrderResult[]>
     marginCancelOrder(options: {
       symbol: string
       orderId?: number
       useServerTime?: boolean
     }): Promise<CancelOrderResult>
-    marginOpenOrders(options: { symbol?: string; useServerTime?: boolean }): Promise<QueryOrderResult[]>
+    marginOpenOrders(options: {
+      symbol?: string
+      useServerTime?: boolean
+    }): Promise<QueryOrderResult[]>
+    marginRepay(options: MarginBorrowOptions): Promise<{ tranId: number }>
+    marginLoan(options: MarginBorrowOptions): Promise<{ tranId: number }>
+    marginAccountInfo(options?: { recvWindow?: number }): Promise<IsolatedCrossAccount>
+    marginIsolatedAccount(options?: {
+      symbols?: string
+      recvWindow?: number
+    }): Promise<IsolatedMarginAccount>
+    marginMaxBorrow(options: {
+      asset: string
+      isolatedSymbol?: string
+      recvWindow?: number
+    }): Promise<{ amount: string; borrowLimit: string }>
+    marginCreateIsolated(options: {
+      base: string
+      quote: string
+      recvWindow?: number
+    }): Promise<{ success: boolean; symbol: string }>
+    marginIsolatedTransfer(options: marginIsolatedTransfer): Promise<{ tranId: string }>
+    marginIsolatedTransferHistory(
+      options: marginIsolatedTransferHistory,
+    ): Promise<marginIsolatedTransferHistoryResponse>
+    marginMyTrades(options: {
+      symbol: string
+      isIsolated?: string | boolean
+      startTime?: number
+      endTime?: number
+      limit?: number
+      fromId?: number
+    }): Promise<MyTrade[]>
+    disableMarginAccount(options: { symbol: string }): Promise<{ success: boolean; symbol: string }>
+    enableMarginAccount(options: { symbol: string }): Promise<{ success: boolean; symbol: string }>
   }
 
   export interface HttpError extends Error {
@@ -305,22 +719,72 @@ declare module 'bicobro-binance-api' {
     url: string
   }
 
-  export type UserDataStreamEvent = OutboundAccountInfo | ExecutionReport | BalanceUpdate | OutboundAccountPosition
+  export type MarkPrice = {
+    eventType: string
+    eventTime: number
+    symbol: string
+    markPrice: string
+    indexPrice: string
+    settlePrice: string
+    fundingRate: string
+    nextFundingRate: number
+  }
+
+  export type UserDataStreamEvent =
+    | OutboundAccountInfo
+    | ExecutionReport
+    | BalanceUpdate
+    | OutboundAccountPosition
+    | MarginCall
 
   export interface WebSocket {
+    customSubStream: (
+      pair: string | string[],
+      callback: (data: any) => void,
+    ) => ReconnectingWebSocketHandler
+    futuresAllMarkPrices: (
+      payload: { updateSpeed: '1s' | '3s' },
+      callback: (data: MarkPrice[]) => void,
+    ) => ReconnectingWebSocketHandler
+    futuresCustomSubStream: (
+      pair: string | string[],
+      callback: (data: any) => void,
+    ) => ReconnectingWebSocketHandler
     depth: (
       pair: string | string[],
       callback: (depth: Depth) => void,
+      transform?: boolean,
+    ) => ReconnectingWebSocketHandler
+    futuresDepth: (
+      pair: string | string[],
+      callback: (depth: Depth) => void,
+      transform?: boolean,
     ) => ReconnectingWebSocketHandler
     partialDepth: (
       options: { symbol: string; level: number } | { symbol: string; level: number }[],
       callback: (depth: PartialDepth) => void,
+      transform?: boolean,
+    ) => ReconnectingWebSocketHandler
+    futuresPartialDepth: (
+      options: { symbol: string; level: number } | { symbol: string; level: number }[],
+      callback: (depth: PartialDepth) => void,
+      transform?: boolean,
     ) => ReconnectingWebSocketHandler
     ticker: (
       pair: string | string[],
       callback: (ticker: Ticker) => void,
     ) => ReconnectingWebSocketHandler
+    miniTicker: (
+      pair: string | string[],
+      callback: (ticker: MiniTicker) => void,
+    ) => ReconnectingWebSocketHandler
+    allMiniTickers: (callback: (ticker: MiniTicker[]) => void) => ReconnectingWebSocketHandler
+    futuresTicker: (
+      pair: string | string[],
+      callback: (ticker: Ticker) => void,
+    ) => ReconnectingWebSocketHandler
     allTickers: (callback: (tickers: Ticker[]) => void) => ReconnectingWebSocketHandler
+    futuresAllTickers: (callback: (tickers: Ticker[]) => void) => ReconnectingWebSocketHandler
     candles: (
       pair: string | string[],
       period: string,
@@ -328,26 +792,72 @@ declare module 'bicobro-binance-api' {
     ) => ReconnectingWebSocketHandler
     trades: (
       pairs: string | string[],
-      callback: (trade: Trade) => void,
+      callback: (trade: WSTrade) => void,
     ) => ReconnectingWebSocketHandler
     aggTrades: (
       pairs: string | string[],
-      callback: (trade: Trade) => void,
+      callback: (trade: AggregatedTrade) => void,
     ) => ReconnectingWebSocketHandler
+    futuresLiquidations: (
+      symbol: string | string[],
+      callback: (forecOrder: ForceOrder) => void,
+    ) => ReconnectingWebSocketHandler
+    futuresAllLiquidations: (
+      callback: (forecOrder: ForceOrder) => void,
+    ) => ReconnectingWebSocketHandler
+    futuresAggTrades: (
+      pairs: string | string[],
+      callback: (trade: AggregatedTrade) => void,
+    ) => ReconnectingWebSocketHandler
+    futuresCandles: (
+      pair: string | string[],
+      period: string,
+      callback: (ticker: Candle) => void,
+    ) => ReconnectingWebSocketHandler
+
     user: (callback: (msg: UserDataStreamEvent) => void) => Promise<ReconnectingWebSocketHandler>
-    marginUser: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Promise<ReconnectingWebSocketHandler>
-    futuresUser: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Promise<ReconnectingWebSocketHandler>
+    marginUser: (
+      callback: (msg: OutboundAccountInfo | ExecutionReport) => void,
+    ) => Promise<ReconnectingWebSocketHandler>
+    futuresUser: (
+      callback: (
+        msg:
+          | OutboundAccountInfo
+          | ExecutionReport
+          | AccountUpdate
+          | OrderUpdate
+          | AccountConfigUpdate
+          | MarginCall,
+      ) => void,
+    ) => Promise<ReconnectingWebSocketHandler>
   }
 
   export type WebSocketCloseOptions = {
-    delay: number;
-    fastClose: boolean;
-    keepClosed: boolean;
+    delay: number
+    fastClose: boolean
+    keepClosed: boolean
   }
 
   export type ReconnectingWebSocketHandler = (options?: WebSocketCloseOptions) => void
 
-  export enum CandleChartInterval {
+  export type CandleChartInterval_LT =
+    | '1m'
+    | '3m'
+    | '5m'
+    | '15m'
+    | '30m'
+    | '1h'
+    | '2h'
+    | '4h'
+    | '6h'
+    | '8h'
+    | '12h'
+    | '1d'
+    | '3d'
+    | '1w'
+    | '1M'
+
+  export const enum CandleChartInterval {
     ONE_MINUTE = '1m',
     THREE_MINUTES = '3m',
     FIVE_MINUTES = '5m',
@@ -365,30 +875,48 @@ declare module 'bicobro-binance-api' {
     ONE_MONTH = '1M',
   }
 
-  export type RateLimitType = 'REQUEST_WEIGHT' | 'ORDERS'
+  export type RateLimitType_LT = 'REQUEST_WEIGHT' | 'ORDERS'
 
-  export enum TradingType {
+  export const enum RateLimitType {
+    REQUEST_WEIGHT = 'REQUEST_WEIGHT',
+    ORDERS = 'ORDERS',
+  }
+
+  export type TradingType_LT = 'MARGIN' | 'SPOT'
+
+  export const enum TradingType {
     MARGIN = 'MARGIN',
     SPOT = 'SPOT',
   }
 
-  export type RateLimitInterval = 'SECOND' | 'MINUTE' | 'DAY'
+  export type RateLimitInterval_LT = 'SECOND' | 'MINUTE' | 'DAY'
+
+  export const enum RateLimitInterval {
+    SECOND = 'SECOND',
+    MINUTE = 'MINUTE',
+    DAY = 'DAY',
+  }
 
   export interface ExchangeInfoRateLimit {
-    rateLimitType: RateLimitType
-    interval: RateLimitInterval
+    rateLimitType: RateLimitType_LT
+    interval: RateLimitInterval_LT
     intervalNum: number
     limit: number
   }
 
-  export type ExchangeFilterType = 'EXCHANGE_MAX_NUM_ORDERS' | 'EXCHANGE_MAX_ALGO_ORDERS'
+  export type ExchangeFilterType_LT = 'EXCHANGE_MAX_NUM_ORDERS' | 'EXCHANGE_MAX_ALGO_ORDERS'
+
+  export const enum ExchangeFilterType {
+    EXCHANGE_MAX_NUM_ORDERS = 'EXCHANGE_MAX_NUM_ORDERS',
+    EXCHANGE_MAX_ALGO_ORDERS = 'EXCHANGE_MAX_ALGO_ORDERS',
+  }
 
   export interface ExchangeFilter {
-    filterType: ExchangeFilterType
+    filterType: ExchangeFilterType_LT
     limit: number
   }
 
-  export type SymbolFilterType =
+  export type SymbolFilterType_LT =
     | 'PRICE_FILTER'
     | 'PERCENT_PRICE'
     | 'LOT_SIZE'
@@ -396,48 +924,64 @@ declare module 'bicobro-binance-api' {
     | 'MAX_NUM_ORDERS'
     | 'MAX_ALGO_ORDERS'
 
+  export const enum SymbolFilterType {
+    PRICE_FILTER = 'PRICE_FILTER',
+    PERCENT_PRICE = 'PERCENT_PRICE',
+    LOT_SIZE = 'LOT_SIZE',
+    MARKET_LOT_SIZE = 'MARKET_LOT_SIZE',
+    MIN_NOTIONAL = 'MIN_NOTIONAL',
+    MAX_NUM_ORDERS = 'MAX_NUM_ORDERS',
+    MAX_ALGO_ORDERS = 'MAX_ALGO_ORDERS',
+  }
+
   export interface SymbolPriceFilter {
-    filterType: SymbolFilterType
+    filterType: SymbolFilterType.PRICE_FILTER
     minPrice: string
     maxPrice: string
     tickSize: string
   }
 
   export interface SymbolPercentPriceFilter {
-    filterType: SymbolFilterType
+    filterType: SymbolFilterType.PERCENT_PRICE
     multiplierDown: string
     multiplierUp: string
-    avgPriceMins: number
+    multiplierDecimal: number
   }
 
   export interface SymbolLotSizeFilter {
-    filterType: SymbolFilterType
+    filterType: SymbolFilterType.LOT_SIZE
+    minQty: string
+    maxQty: string
+    stepSize: string
+  }
+
+  export interface SymbolMarketLotSizeFilter {
+    filterType: SymbolFilterType.MARKET_LOT_SIZE
     minQty: string
     maxQty: string
     stepSize: string
   }
 
   export interface SymbolMinNotionalFilter {
-    applyToMarket: boolean
-    avgPriceMins: number
-    filterType: SymbolFilterType
-    minNotional: string
+    filterType: SymbolFilterType.MIN_NOTIONAL
+    notional: string
   }
 
   export interface SymbolMaxNumOrdersFilter {
-    filterType: SymbolFilterType
-    limit: number
+    filterType: SymbolFilterType.MAX_NUM_ORDERS
+    maxNumOrders: number
   }
 
   export interface SymbolMaxAlgoOrdersFilter {
-    filterType: SymbolFilterType
-    limit: number
+    filterType: SymbolFilterType.MAX_ALGO_ORDERS
+    maxNumAlgoOrders: number
   }
 
   export type SymbolFilter =
     | SymbolPriceFilter
     | SymbolPercentPriceFilter
     | SymbolLotSizeFilter
+    | SymbolMarketLotSizeFilter
     | SymbolMinNotionalFilter
     | SymbolMaxNumOrdersFilter
     | SymbolMaxAlgoOrdersFilter
@@ -451,8 +995,10 @@ declare module 'bicobro-binance-api' {
     isMarginTradingAllowed: boolean
     isSpotTradingAllowed: boolean
     ocoAllowed: boolean
-    orderTypes: OrderType[]
+    orderTypes: OrderType_LT[]
+    permissions: TradingType_LT[]
     quoteAsset: string
+    quoteAssetPrecision: number
     quoteCommissionPrecision: number
     quoteOrderQtyMarketAllowed: boolean
     quotePrecision: number
@@ -474,28 +1020,30 @@ declare module 'bicobro-binance-api' {
     bids: Bid[]
   }
 
-  export interface NewOrder {
-    icebergQty?: string
-    newClientOrderId?: string
-    price?: string
-    quantity: string
-    recvWindow?: number
-    side: OrderSide
-    stopPrice?: string
+  export interface NewFuturesOrder {
     symbol: string
-    timeInForce?: TimeInForce
-    useServerTime?: boolean
-    type: OrderType
-    newOrderRespType?: NewOrderRespType
-    isIsolated?: boolean
-    quoteOrderQty?: string
-    sideEffectType?: SideEffectType
+    side: OrderSide_LT
+    positionSide?: PositionSide_LT
+    type: OrderType_LT
+    quantity?: string
+    reduceOnly?: 'true' | 'false'
+    price?: number
+    timeInForce?: TimeInForce_LT
+    newClientOrderId?: string
+    stopPrice?: number
+    closePosition?: 'true' | 'false'
+    activationPrice?: number
+    callbackRate?: number
+    workingType?: WorkingType_LT
+    newOrderRespType?: NewOrderRespType_LT
+    recvWindow?: number
+    timestamp?: number
   }
 
   export interface NewOcoOrder {
     symbol: string
     listClientOrderId?: string
-    side: OrderSide
+    side: OrderSide_LT
     quantity: string
     limitClientOrderId?: string
     price: string
@@ -504,18 +1052,71 @@ declare module 'bicobro-binance-api' {
     stopPrice: string
     stopLimitPrice?: string
     stopIcebergQty?: string
-    stopLimitTimeInForce?: TimeInForce
-    newOrderRespType?: NewOrderRespType
+    stopLimitTimeInForce?: TimeInForce_LT
+    newOrderRespType?: NewOrderRespType_LT
     recvWindow?: number
     useServerTime?: boolean
   }
 
-  export type SideEffectType =
-    | 'NO_SIDE_EFFECT'
-    | 'MARGIN_BUY'
-    | 'AUTO_REPAY'
+  export interface NewOrderParent {
+    symbol: string
+    side: OrderSide_LT
+    type: OrderType_LT
+    newClientOrderId?: string
+    newOrderRespType?: NewOrderRespType_LT
+    recvWindow?: number
+    timeInForce?: TimeInForce_LT
+    useServerTime?: boolean
+  }
+
+  export interface NewOrderMarketBase extends NewOrderParent {
+    type: OrderType.MARKET
+    quantity: string
+  }
+
+  export interface NewOrderMarketQuote extends NewOrderParent {
+    type: OrderType.MARKET
+    quoteOrderQty: string
+  }
+
+  export interface NewOrderLimit extends NewOrderParent {
+    type: OrderType.LIMIT
+    quantity: string
+    price: string
+    icebergQty?: string
+  }
+
+  export interface NewOrderSL extends NewOrderParent {
+    type: OrderType.STOP_LOSS_LIMIT | OrderType.TAKE_PROFIT_LIMIT
+    quantity: string
+    price: string
+    stopPrice: string
+    icebertQty?: string
+  }
+
+  export interface NewMarginOrderParent {
+    isIsolated?: 'TRUE' | 'FALSE' | boolean
+    sideEffectType?: SideEffectType_LT
+  }
+
+  export type NewOrderSpot = NewOrderMarketBase | NewOrderMarketQuote | NewOrderLimit | NewOrderSL
+
+  export type NewOrderMargin = NewOrderSpot & NewMarginOrderParent
+
+  export type NewOcoOrderMargin = NewOrderSpot & NewOcoOrder & NewMarginOrderParent & {}
+
+  export type MarginOcoOrder = OcoOrder & { isIsolated?: 'TRUE' | 'FALSE' | boolean }
+
+  export type SideEffectType_LT = 'NO_SIDE_EFFECT' | 'MARGIN_BUY' | 'AUTO_REPAY'
+
+  export const enum SideEffectType {
+    NO_SIDE_EFFECT = 'NO_SIDE_EFFECT',
+    MARGIN_BUY = 'MARGIN_BUY',
+    AUTO_REPAY = 'AUTO_REPAY',
+  }
 
   export interface OrderFill {
+    tradeId: number
     price: string
     qty: string
     commission: string
@@ -526,26 +1127,77 @@ declare module 'bicobro-binance-api' {
     clientOrderId: string
     cummulativeQuoteQty: string
     executedQty: string
+    fills?: OrderFill[]
     icebergQty?: string
+    isIsolated?: boolean
+    isWorking: boolean
     orderId: number
     orderListId: number
     origQty: string
     price: string
-    side: OrderSide
-    status: OrderStatus
+    side: OrderSide_LT
+    status: OrderStatus_LT
     stopPrice?: string
     symbol: string
-    timeInForce: TimeInForce
-    transactTime: number
-    type: OrderType
-    fills?: OrderFill[]
+    time: number
+    timeInForce: TimeInForce_LT
+    transactTime?: number
+    type: OrderType_LT
+    updateTime: number
+  }
+
+  export interface FuturesOrder {
+    clientOrderId: string
+    cumQty: string
+    cumQuote: string
+    executedQty: string
+    orderId: number
+    avgPrice: string
+    origQty: string
+    price: string
+    reduceOnly: boolean
+    side: OrderSide_LT
+    positionSide: PositionSide_LT
+    status: OrderStatus_LT
+    stopPrice: string
+    closePosition: boolean
+    symbol: string
+    timeInForce: TimeInForce_LT
+    type: OrderType_LT
+    origType: OrderType_LT
+    activatePrice: string
+    priceRate: string
+    updateTime: number
+    workingType: WorkingType_LT
+  }
+
+  export type ListOrderStatus_LT = 'EXECUTING' | 'ALL_DONE' | 'REJECT'
+
+  export const enum ListOrderStatus {
+    EXECUTING = 'EXECUTING',
+    ALL_DONE = 'ALL_DONE',
+    REJECT = 'REJECT',
+  }
+
+  export type ListStatusType_LT = 'RESPONSE' | 'EXEC_STARTED' | 'ALL_DONE'
+
+  export const enum ListStatusType {
+    RESPONSE = 'RESPONSE',
+    EXEC_STARTED = 'EXEC_STARTED',
+    ALL_DONE = 'ALL_DONE',
+  }
+
+  export type OcoOrderType_LT = 'OCO'
+
+  export const enum OcoOrderType {
+    CONTINGENCY_TYPE = 'OCO',
   }
 
   export interface OcoOrder {
     orderListId: number
-    contingencyType: ContingencyType
-    listStatusType: ListStatusType
-    listOrderStatus: ListOrderStatus
+    contingencyType: OcoOrderType.CONTINGENCY_TYPE
+    listStatusType: ListStatusType_LT
+    listOrderStatus: ListOrderStatus_LT
     listClientOrderId: string
     transactionTime: number
     symbol: string
@@ -553,9 +1205,14 @@ declare module 'bicobro-binance-api' {
     orderReports: Order[]
   }
 
-  export type OrderSide = 'BUY' | 'SELL'
+  export type OrderSide_LT = 'BUY' | 'SELL'
 
-  export type OrderStatus =
+  export const enum OrderSide {
+    BUY = 'BUY',
+    SELL = 'SELL',
+  }
+
+  export type OrderStatus_LT =
     | 'CANCELED'
     | 'EXPIRED'
     | 'FILLED'
@@ -564,26 +1221,69 @@ declare module 'bicobro-binance-api' {
     | 'PENDING_CANCEL'
     | 'REJECTED'
 
-  export type OrderType =
+  export const enum OrderStatus {
+    CANCELED = 'CANCELED',
+    EXPIRED = 'EXPIRED',
+    FILLED = 'FILLED',
+    NEW = 'NEW',
+    PARTIALLY_FILLED = 'PARTIALLY_FILLED',
+    PENDING_CANCEL = 'PENDING_CANCEL',
+    REJECTED = 'REJECTED',
+  }
+
+  export type OrderType_LT =
     | 'LIMIT'
     | 'LIMIT_MAKER'
     | 'MARKET'
-    | 'STOP_LOSS'
+    | 'STOP'
+    | 'STOP_MARKET'
     | 'STOP_LOSS_LIMIT'
-    | 'TAKE_PROFIT'
     | 'TAKE_PROFIT_LIMIT'
+    | 'TAKE_PROFIT_MARKET'
+    | 'TRAILING_STOP_MARKET'
 
-  export type ListOrderStatus = 'EXECUTING' | 'ALL_DONE' | 'REJECT'
+  export const enum OrderType {
+    LIMIT = 'LIMIT',
+    LIMIT_MAKER = 'LIMIT_MAKER',
+    MARKET = 'MARKET',
+    STOP = 'STOP',
+    STOP_MARKET = 'STOP_MARKET',
+    STOP_LOSS_LIMIT = 'STOP_LOSS_LIMIT',
+    TAKE_PROFIT_LIMIT = 'TAKE_PROFIT_LIMIT',
+    TAKE_PROFIT_MARKET = 'TAKE_PROFIT_MARKET',
+    TRAILING_STOP_MARKET = 'TRAILING_STOP_MARKET',
+  }
 
-  export type ListStatusType = 'RESPONSE' | 'EXEC_STARTED' | 'ALL_DONE'
+  export type NewOrderRespType_LT = 'ACK' | 'RESULT' | 'FULL'
 
-  export type ContingencyType = 'OCO'
+  export const enum NewOrderRespType {
+    ACK = 'ACK',
+    RESULT = 'RESULT',
+    FULL = 'FULL',
+  }
 
-  export type NewOrderRespType = 'ACK' | 'RESULT' | 'FULL'
+  export type TimeInForce_LT = 'GTC' | 'IOC' | 'FOK'
 
-  export type TimeInForce = 'GTC' | 'IOC' | 'FOK'
+  export const enum TimeInForce {
+    GTC = 'GTC',
+    IOC = 'IOC',
+    FOK = 'FOK',
+  }
 
-  export enum OrderRejectReason {
+  export type OrderRejectReason_LT =
+    | 'ACCOUNT_CANNOT_SETTLE'
+    | 'ACCOUNT_INACTIVE'
+    | 'DUPLICATE_ORDER'
+    | 'INSUFFICIENT_BALANCE'
+    | 'MARKET_CLOSED'
+    | 'NONE'
+    | 'ORDER_WOULD_TRIGGER_IMMEDIATELY'
+    | 'PRICE_QTY_EXCEED_HARD_LIMITS'
+    | 'UNKNOWN_ACCOUNT'
+    | 'UNKNOWN_INSTRUMENT'
+    | 'UNKNOWN_ORDER'
+
+  export const enum OrderRejectReason {
     ACCOUNT_CANNOT_SETTLE = 'ACCOUNT_CANNOT_SETTLE',
     ACCOUNT_INACTIVE = 'ACCOUNT_INACTIVE',
     DUPLICATE_ORDER = 'DUPLICATE_ORDER',
@@ -597,7 +1297,16 @@ declare module 'bicobro-binance-api' {
     UNKNOWN_ORDER = 'UNKNOWN_ORDER',
   }
 
-  export type ExecutionType = 'NEW' | 'CANCELED' | 'REPLACED' | 'REJECTED' | 'TRADE' | 'EXPIRED'
+  export type ExecutionType_LT = 'NEW' | 'CANCELED' | 'REPLACED' | 'REJECTED' | 'TRADE' | 'EXPIRED'
+
+  export const enum ExecutionType {
+    NEW = 'NEW',
+    CANCELED = 'CANCELED',
+    REPLACED = 'REPLACED',
+    REJECTED = 'REJECTED',
+    TRADE = 'TRADE',
+    EXPIRED = 'EXPIRED',
+  }
 
   export interface Depth {
     eventType: string
@@ -652,6 +1361,18 @@ declare module 'bicobro-binance-api' {
     totalTrades: number
   }
 
+  export interface MiniTicker {
+    eventType: string
+    eventTime: number
+    symbol: string
+    curDayClose: string
+    open: string
+    high: string
+    low: string
+    volume: string
+    volumeQuote: string
+  }
+
   export interface Candle {
     eventType: string
     eventTime: number
@@ -684,11 +1405,44 @@ declare module 'bicobro-binance-api' {
     tradeId: number
   }
 
+  export interface WSTrade extends Trade {
+    tradeTime: number
+    buyerOrderId: number
+    sellerOrderId: number
+  }
+
   export interface Balances {
     [key: string]: {
       available: string
       locked: string
     }
+  }
+
+  export type EventType_LT =
+    | 'account'
+    | 'balanceUpdate'
+    | 'outboundAccountPosition'
+    | 'executionReport'
+    | 'ACCOUNT_UPDATE'
+    | 'ORDER_TRADE_UPDATE'
+    | 'MARGIN_CALL'
+    | 'ACCOUNT_CONFIG_UPDATE'
+
+  export interface MarginCall {
+    eventType: 'MARGIN_CALL'
+    eventTime: number
+    crossWalletBalance: string
+
+    positions: {
+      symbol: string
+      positionSide: PositionSide_LT
+      positionAmount: string
+      marginType: MarginType_LT
+      isolatedWallet: string
+      markPrice: string
+      unrealizedPnL: string
+      maintenanceMarginRequired: string
+    }[]
   }
 
   export interface OutboundAccountInfo {
@@ -726,7 +1480,7 @@ declare module 'bicobro-binance-api' {
     creationTime: number // Order creation time
     eventTime: number
     eventType: 'executionReport'
-    executionType: ExecutionType // Current execution type
+    executionType: ExecutionType_LT // Current execution type
     icebergQuantity: string // Iceberg quantity
     isBuyerMaker: boolean // Is this trade the maker side?
     isOrderWorking: boolean // Is the order on the book?
@@ -736,21 +1490,121 @@ declare module 'bicobro-binance-api' {
     orderId: number // Order ID
     orderListId: number // OrderListId
     orderRejectReason: OrderRejectReason // Order reject reason; will be an error code.
-    orderStatus: OrderStatus // Current order status
+    orderStatus: OrderStatus_LT // Current order status
     orderTime: number // Transaction time
-    orderType: OrderType // Order type
+    orderType: OrderType_LT // Order type
     originalClientOrderId: string | null // Original client order ID; This is the ID of the order being canceled
     price: string // Order price
     priceLastTrade: string // Last executed price
     quantity: string // Order quantity
     quoteOrderQuantity: string // Quote Order Qty
-    side: OrderSide // Side
+    side: OrderSide_LT // Side
     stopPrice: string // Stop price
     symbol: string // Symbol
-    timeInForce: TimeInForce // Time in force
+    timeInForce: TimeInForce_LT // Time in force
     totalQuoteTradeQuantity: string // Cumulative quote asset transacted quantity
     totalTradeQuantity: string // Cumulative filled quantity
     tradeId: number // Trade ID
+  }
+
+  export interface Balance {
+    asset: string
+    walletBalance: string
+    crossWalletBalance: string
+    balanceChange: string
+  }
+
+  export interface Position {
+    symbol: string
+    positionAmount: string
+    entryPrice: string
+    accumulatedRealized: string
+    unrealizedPnL: string
+    marginType: 'isolated' | 'cross'
+    isolatedWallet: string
+    positionSide: PositionSide_LT
+  }
+
+  export type EventReasonType =
+    | 'DEPOSIT'
+    | 'WITHDRAW'
+    | 'ORDER'
+    | 'FUNDING_FEE'
+    | 'WITHDRAW_REJECT'
+    | 'ADJUSTMENT'
+    | 'INSURANCE_CLEAR'
+    | 'ADMIN_DEPOSIT'
+    | 'ADMIN_WITHDRAW'
+    | 'MARGIN_TRANSFER'
+    | 'MARGIN_TYPE_CHANGE'
+    | 'ASSET_TRANSFER'
+    | 'OPTIONS_PREMIUM_FEE'
+    | 'OPTIONS_SETTLE_PROFIT'
+    | 'AUTO_EXCHANGE'
+
+  export interface AccountUpdate {
+    eventTime: number
+    eventType: 'ACCOUNT_UPDATE'
+    transactionTime: number
+    eventReasonType: EventReasonType
+    balances: Balance[]
+    positions: Position[]
+  }
+
+  export interface AccountConfigUpdateBase {
+    eventTime: number
+    eventType: 'ACCOUNT_CONFIG_UPDATE'
+    transactionTime: number
+    type: 'ACCOUNT_CONFIG' | 'MULTI_ASSETS'
+  }
+
+  export interface AccountConfigUpdateConfig extends AccountConfigUpdateBase {
+    type: 'ACCOUNT_CONFIG'
+    symbol: string
+    leverage: number
+  }
+
+  export interface AccountConfigUpdateMultiAssets extends AccountConfigUpdateBase {
+    type: 'MULTI_ASSETS'
+    multiAssets: boolean
+  }
+
+  export type AccountConfigUpdate = AccountConfigUpdateConfig | AccountConfigUpdateMultiAssets
+
+  export interface OrderUpdate {
+    eventType: 'ORDER_TRADE_UPDATE'
+    eventTime: number
+    transactionTime: number
+    symbol: string
+    clientOrderId: string
+    side: OrderSide
+    orderType: OrderType
+    timeInForce: TimeInForce
+    quantity: string
+    price: string
+    averagePrice: string
+    stopPrice: string
+    executionType: ExecutionType
+    orderStatus: OrderStatus
+    orderId: number
+    lastTradeQuantity: string
+    totalTradeQuantity: string
+    priceLastTrade: string
+    commissionAsset: string | null
+    commission: string
+    orderTime: number
+    tradeId: number
+    bidsNotional: string
+    asksNotional: string
+    isMaker: boolean
+    isReduceOnly: boolean
+    workingType: WorkingType
+    originalOrderType: OrderType
+    positionSide: PositionSide
+    closePosition: boolean
+    activationPrice: string
+    callbackRate: string
+    realizedProfit: string
   }
 
   export interface TradeResult {
@@ -761,6 +1615,23 @@ declare module 'bicobro-binance-api' {
     time: number
     isBuyerMaker: boolean
     isBestMatch: boolean
+  }
+
+  export interface FuturesUserTradeResult {
+    buyer: boolean
+    commission: string
+    commissionAsset: string
+    id: number
+    maker: boolean
+    orderId: number
+    price: string
+    qty: string
+    quoteQty: string
+    realizedPnl: string
+    side: OrderSide_LT
+    positionSide: PositionSide_LT
+    symbol: string
+    time: number
   }
 
   export interface MyTrade {
@@ -790,14 +1661,49 @@ declare module 'bicobro-binance-api' {
     origQty: string
     origQuoteOrderQty: string
     price: string
-    side: OrderSide
-    status: OrderStatus
+    side: OrderSide_LT
+    status: OrderStatus_LT
     stopPrice: string
     symbol: string
     time: number
-    timeInForce: TimeInForce
-    type: string
+    timeInForce: TimeInForce_LT
+    type: OrderType_LT
     updateTime: number
+  }
+
+  export interface QueryFuturesOrderResult {
+    avgPrice: string
+    clientOrderId: string
+    cumQuote: string
+    executedQty: string
+    orderId: string
+    origQty: string
+    origType: OrderType_LT
+    price: string
+    side: OrderSide_LT
+    positionSide: PositionSide_LT
+    status: OrderStatus_LT
+    stopPrice: string
+    closePosition: boolean
+    symbol: string
+    time: number
+    timeInForce: TimeInForce_LT
+    type: OrderType_LT
+    activatePrice: string
+    priceRate: string
+    updateTime: number
+    workingType: WorkingType_LT
+  }
+
+  export interface QueryOrderOcoResult {
+    orderListId: number
+    contingencyType: OcoOrderType.CONTINGENCY_TYPE
+    listStatusType: ListStatusType_LT
+    listOrderStatus: ListOrderStatus_LT
+    listClientOrderId: string
+    transactionTime: number
+    symbol: string
+    orders: Order[]
   }
 
   export interface CancelOrderResult {
@@ -812,8 +1718,25 @@ declare module 'bicobro-binance-api' {
     cummulativeQuoteQty: string
     status: string
     timeInForce: string
-    type: string
-    side: string
+    type: OrderType_LT
+    side: OrderSide_LT
+  }
+
+  export interface FuturesCancelAllOpenOrdersResult {
+    code: number
+    msg: string
+  }
+
+  export interface CancelOrderOcoResult {
+    orderListId: number
+    contingencyType: OcoOrderType.CONTINGENCY_TYPE
+    listStatusType: ListStatusType_LT
+    listOrderStatus: ListOrderStatus_LT
+    listClientOrderId: string
+    transactionTime: number
+    symbol: string
+    orders: Order[]
+    orderReports: Order[]
   }
 
   export interface AvgPriceResult {
@@ -847,11 +1770,13 @@ declare module 'bicobro-binance-api' {
 
   export interface CandlesOptions {
     symbol: string
-    interval: CandleChartInterval | string
+    interval: CandleChartInterval_LT
     limit?: number
     startTime?: number
     endTime?: number
   }
+
+  export type IndexPriceCandlesOptions = Omit<CandlesOptions, 'symbol'> & { pair: string }
 
   export interface CandleChartResult {
     openTime: number
@@ -883,8 +1808,8 @@ declare module 'bicobro-binance-api' {
     averagePrice: string
     status: string
     timeInForce: string
-    type: string
-    side: string
+    type: OrderType_LT
+    side: OrderSide_LT
     time: number
   }
 
@@ -897,7 +1822,7 @@ declare module 'bicobro-binance-api' {
 
   export interface PositionRiskResult {
     entryPrice: string
-    marginType: string
+    marginType: 'isolated' | 'cross'
     isAutoAddMargin: string
     isolatedMargin: string
     leverage: string
@@ -907,7 +1832,24 @@ declare module 'bicobro-binance-api' {
     positionAmt: string
     symbol: string
     unRealizedProfit: string
-    positionSide: string
+    positionSide: PositionSide_LT
+    notional: string
+    isolatedWallet: string
+    updateTime: number
+  }
+
+  export interface LeverageBracketResult {
+    symbol: string
+    brackets: Bracket[]
+  }
+
+  export interface Bracket {
+    bracket: number // Notional bracket
+    initialLeverage: number // Max initial leverage for this bracket
+    notionalCap: number // Cap notional of this bracket
+    notionalFloor: number // Notional threshold of this bracket
+    maintMarginRatio: number // Maintenance ratio for this bracket
+    cum: 0 // Auxiliary number for quick calculation
   }
 
   export interface FuturesBalanceResult {
@@ -920,6 +1862,127 @@ declare module 'bicobro-binance-api' {
     maxWithdrawAmount: string
   }
 
+  export type FuturesAssetType =
+    | 'DOT'
+    | 'BTC'
+    | 'SOL'
+    | 'BNB'
+    | 'ETH'
+    | 'ADA'
+    | 'USDT'
+    | 'XRP'
+    | 'BUSD'
+
+  export type FuturesAsset = {
+    asset: FuturesAssetType
+
+    walletBalance: string
+
+    unrealizedProfit: string
+
+    marginBalance: string
+
+    maintMargin: string
+
+    initialMargin: string
+
+    positionInitialMargin: string
+
+    openOrderInitialMargin: string
+
+    maxWithdrawAmount: string
+
+    crossWalletBalance: string
+
+    crossUnPnl: string
+
+    availableBalance: string
+
+    marginAvailable: boolean
+
+    updateTime: number
+  }
+
+  export interface FuturesAccountInfoResult {
+    feeTier: number
+    canTrade: boolean
+    canDeposit: boolean
+    canWithdraw: boolean
+    updateTime: number
+    totalInitialMargin: string
+    totalMaintMargin: string
+    totalWalletBalance: string
+    totalUnrealizedProfit: string
+    totalMarginBalance: string
+    totalPositionInitialMargin: string
+    totalOpenOrderInitialMargin: string
+    totalCrossWalletBalance: string
+    totalCrossUnPnl: string
+    availableBalance: string
+    maxWithdrawAmount: string
+    assets: FuturesAsset[]
+    positions: FuturesAccountPosition[]
+  }
+
+  export interface FuturesAccountPosition {
+    symbol: string
+    initialMargin: string
+    maintMargin: string
+    unrealizedProfit: string
+    positionInitialMargin: string
+    openOrderInitialMargin: string
+    leverage: string
+    isolated: boolean
+    entryPrice: string
+    maxNotional: string
+    positionSide: PositionSide_LT
+    positionAmt: string
+    notional: string
+    isolatedWallet: string
+    updateTime: number
+    bidNotional: string
+    askNotional: string
+  }
+
+  export interface FuturesLeverageResult {
+    leverage: number
+    maxNotionalValue: number
+    symbol: string
+  }
+
+  export interface FuturesMarginTypeResult {
+    code: number
+    msg: string
+  }
+
+  export type FuturesIncomeType_LT =
+    | 'TRANSFER'
+    | 'WELCOME_BONUS'
+    | 'REALIZED_PNL'
+    | 'FUNDING_FEE'
+    | 'COMMISSION'
+    | 'INSURANCE_CLEAR'
+
+  export const enum FuturesIncomeType {
+    TRANSFER = 'TRANSFER',
+    WELCOME_BONUS = 'WELCOME_BONUS',
+    REALIZED_PNL = 'REALIZED_PNL',
+    FUNDING_FEE = 'FUNDING_FEE',
+    COMMISSION = 'COMMISSION',
+    INSURANCE_CLEAR = 'INSURANCE_CLEAR',
+  }
+
+  export interface FuturesIncomeResult {
+    symbol: string
+    incomeType: FuturesIncomeType_LT
+    income: string
+    asset: string
+    info: string
+    time: number
+    tranId: string
+    tradeId: string
+  }
+
   export interface ChangePositionModeResult {
     code: number
     msg: string
@@ -927,5 +1990,170 @@ declare module 'bicobro-binance-api' {
 
   export interface PositionModeResult {
     dualSidePosition: boolean
+  }
+
+  export interface IsolatedCrossAccount {
+    borrowEnabled: boolean
+    marginLevel: string
+    totalAssetOfBtc: string
+    totalLiabilityOfBtc: string
+    totalNetAssetOfBtc: string
+    tradeEnabled: boolean
+    transferEnabled: boolean
+    userAssets: CrossAsset[]
+  }
+
+  export interface CrossAsset {
+    asset: string
+    borrowed: string
+    free: string
+    interest: string
+    locked: string
+    netAsset: string
+  }
+
+  export interface IsolatedMarginAccount {
+    assets: IsolatedAsset[]
+    totalAssetOfBtc: string
+    totalLiabilityOfBtc: string
+    totalNetAssetOfBtc: string
+  }
+
+  export type MarginLevelStatus_LT =
+    | 'EXCESSIVE'
+    | 'NORMAL'
+    | 'MARGIN_CALL'
+    | 'PRE_LIQUIDATION'
+    | 'FORCE_LIQUIDATION'
+
+  export const enum MarginLevelStatus {
+    EXCESSIVE = 'EXCESSIVE',
+    NORMAL = 'NORMAL',
+    MARGIN_CALL = 'MARGIN_CALL',
+    PRE_LIQUIDATION = 'PRE_LIQUIDATION',
+    FORCE_LIQUIDATION = 'FORCE_LIQUIDATION',
+  }
+
+  export interface IsolatedAsset {
+    baseAsset: IsolatedAssetSingle
+    quoteAsset: IsolatedAssetSingle
+    symbol: string
+    isolatedCreated: boolean
+    marginLevel: string
+    marginLevelStatus: MarginLevelStatus_LT
+    marginRatio: string
+    indexPrice: string
+    liquidatePrice: string
+    liquidateRate: string
+    tradeEnabled: boolean
+  }
+
+  export interface IsolatedAssetSingle {
+    asset: string
+    borrowEnabled: boolean
+    borrowed: string
+    free: string
+    interest: string
+    locked: string
+    netAsset: string
+    netAssetOfBtc: string
+    repayEnabled: boolean
+    totalAsset: string
+  }
+
+  export type WalletType_LT = 'SPOT' | 'ISOLATED_MARGIN'
+
+  export const enum WalletType {
+    SPOT = 'SPOT',
+    ISOLATED_MARGIN = 'ISOLATED_MARGIN',
+  }
+
+  export interface marginIsolatedTransfer {
+    asset: string
+    symbol: string
+    transFrom: WalletType_LT
+    transTo: WalletType_LT
+    amount: number
+    recvWindow?: number
+  }
+
+  export interface marginIsolatedTransferHistory {
+    asset?: string
+    symbol: string
+    transFrom?: WalletType_LT
+    transTo?: WalletType_LT
+    startTime?: number
+    endTime?: number
+    current?: number
+    size?: number
+    recvWindow?: number
+  }
+
+  export interface marginIsolatedTransferHistoryResponse {
+    rows: {
+      amount: string
+      asset: string
+      status: string
+      timestamp: number
+      txId: number
+      transFrom: WalletType_LT
+      transTo: WalletType_LT
+    }[]
+    total: number
+  }
+
+  export interface ForceOrder {
+    symbol: string
+    price: string
+    origQty: string
+    lastFilledQty: string
+    accumulatedQty: string
+    averagePrice: string
+    status: string
+    timeInForce: string
+    type: OrderType_LT
+    side: OrderSide_LT
+    time: number
+  }
+
+  export interface GetFuturesOrder {
+    avgPrice: string
+    clientOrderId: string
+    cumQuote: string
+    executedQty: string
+    orderId: number
+    origQty: string
+    origType: OrderType_LT
+    price: string
+    reduceOnly: boolean
+    side: OrderSide_LT
+    positionSide: PositionSide_LT
+    status: OrderStatus_LT
+    stopPrice: string
+    closePosition: boolean
+    symbol: string
+    time: number
+    timeInForce: TimeInForce_LT
+    type: OrderType_LT
+    activatePrice: string
+    priceRate: string
+    updateTime: number
+    workingType: WorkingType_LT
+    priceProtect: boolean
+  }
+
+  export type PositionSide_LT = 'BOTH' | 'SHORT' | 'LONG'
+
+  export const enum PositionSide {
+    BOTH = 'BOTH',
+    SHORT = 'SHORT',
+    LONG = 'LONG',
+  }
+
+  export type WorkingType_LT = 'MARK_PRICE' | 'CONTRACT_PRICE'
+
+  export const enum WorkingType {
+    MARK_PRICE = 'MARK_PRICE',
+    CONTRACT_PRICE = 'CONTRACT_PRICE',
   }
 }
