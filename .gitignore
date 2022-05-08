@@ -112,3 +112,4 @@ yarn*
 
 .local-pack
 local-package-publisher.log
+.idea
