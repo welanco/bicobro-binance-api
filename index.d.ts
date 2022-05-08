@@ -1,5 +1,5 @@
 // tslint:disable:interface-name
-declare module 'binance-api-node' {
+declare module 'bicobro-binance-api' {
   export default function (options?: {
     apiKey?: string
     apiSecret?: string
