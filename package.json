@@ -1,6 +1,6 @@
 {
   "name": "bicobro-binance-api",
-  "version": "0.11.61",
+  "version": "0.11.62",
   "description": "A node API wrapper for Binance",
   "main": "dist",
   "files": [
@@ -60,7 +60,7 @@
       "!test/utils.js"
     ]
   },
-  "author": "Balthazar Gronon <git@balthazar.dev>",
-  "homepage": "https://github.com/Ashlar/binance-api-node",
+  "author": "Welanco <github@welanco.de>",
+  "homepage": "https://github.com/welanco/bicobro-binance-api.git",
   "license": "MIT"
 }
